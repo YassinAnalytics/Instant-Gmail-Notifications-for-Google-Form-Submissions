@@ -1,0 +1,186 @@
+{
+  "name": "Google Form Instant Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Required\n\n\n- Google account\n- Google Form\n- Google Sheet linked to the form",
+        "height": 176,
+        "color": 3
+      },
+      "id": "8f29a1b3-674b-4d73-92a0-10c5ea425020",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 2. Send the email\n\nThe code node, will create the message and gather all the informations wanted about the row newly added. So you'll get a new message with the new informations.\n\n\nHow to setup:\n- Connect with your Gmail account credentials.",
+        "height": 848,
+        "width": 560,
+        "color": 4
+      },
+      "id": "134fe4e9-bac6-4fd6-bb70-53e27e65a504",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 1.Workflow trigger et data gathering\n\nThe workflow is **triggered automatically** as soon as a new request is received (a new row in the Google sheet from the Google Form). \n\nHow to setup:\n- Set up your Google form and link it to a google sheet\n- link the google sheet to this workflow",
+        "height": 848,
+        "width": 416,
+        "color": 2
+      },
+      "id": "f976cdae-d0c0-46c2-902e-3aa7d2cc6a63",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        272,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\n\nlet html = `\n  <h2>📬 You just got a new question received</h2>\n  <p><strong>From:</strong> ${item[\"Adresse e-mail\"] || \"N/A\"}</p>\n  <p><strong>Request:</strong> ${item[\"Please write your request\"] || \"N/A\"}</p>\n`;\n\nreturn [{ json: { html } }];\n"
+      },
+      "id": "8d21ba4b-3a4b-4e8a-9b44-912e42e9ccfb",
+      "name": "Email generation",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        768,
+        320
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "id",
+          "value": "id"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "id": "0f762b9e-d7d7-4859-b668-9937f056af8d",
+      "name": "Trigger when a row is added",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "position": [
+        352,
+        320
+      ],
+      "notesInFlow": false,
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "email",
+        "subject": "The requests you received today",
+        "message": "={{$json.html}}",
+        "options": {}
+      },
+      "id": "5376aabf-a1ed-4729-9f50-960ae34ac278",
+      "name": "Instant email",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        976,
+        320
+      ],
+      "webhookId": "9a9b4d63-e0ca-4ae5-8854-31229a1c1db3",
+      "typeVersion": 2.1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email generation": {
+      "main": [
+        [
+          {
+            "node": "Instant email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger when a row is added": {
+      "main": [
+        [
+          {
+            "node": "Email generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "48701ca9-598b-484b-8146-84f0bc0f7dad",
+  "meta": {
+    "instanceId": "0430772da25f7bca29bf5ef2b251086a85fb4096503a6f781526d32befd038d6"
+  },
+  "id": "C4EpT6vUOAHgiQdf",
+  "tags": [
+    {
+      "createdAt": "2025-08-18T07:15:32.460Z",
+      "updatedAt": "2025-08-18T07:15:32.460Z",
+      "id": "3T7uxjPBNibzqJlE",
+      "name": "Google"
+    },
+    {
+      "createdAt": "2025-08-18T07:16:22.756Z",
+      "updatedAt": "2025-08-18T07:16:22.756Z",
+      "id": "7zEwLFClveXBEcdb",
+      "name": "google sheet"
+    },
+    {
+      "createdAt": "2025-08-18T07:16:22.720Z",
+      "updatedAt": "2025-08-18T07:16:22.720Z",
+      "id": "MxIJ6vHorSEdfi3v",
+      "name": "google form"
+    },
+    {
+      "createdAt": "2025-08-18T07:16:22.745Z",
+      "updatedAt": "2025-08-18T07:16:22.745Z",
+      "id": "WsGNTPBsmCdx55kq",
+      "name": "email"
+    },
+    {
+      "createdAt": "2025-08-18T07:15:32.499Z",
+      "updatedAt": "2025-08-18T07:15:32.499Z",
+      "id": "bg5CwpF83fBHrGAh",
+      "name": "Productivity"
+    },
+    {
+      "createdAt": "2025-08-18T07:16:22.709Z",
+      "updatedAt": "2025-08-18T07:16:22.709Z",
+      "id": "eAzNESqLUWwWMrE9",
+      "name": "gmail"
+    }
+  ]
+}
